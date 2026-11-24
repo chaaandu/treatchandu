@@ -1,9 +1,15 @@
 # Bribe Desk
 
-`treat.chandumachineni.com`: Chandu's public counter. You can see what he's building and when to catch him, get in the queue, and pay in sweets to move up. No logins.
+`treatchandu.vercel.app`: Chandu's public counter. You can see what he's building and when to catch him, get in the queue, and pay in sweets to move up. No logins.
 
-- **The head**: Chandu's face as a real 3D surface: a cut-out photo pushed into depth by Depth Anything V2. It follows your cursor, chews what you feed it, wears headphones when the calendar says he's on a call, and sleeps after 11 pm IST. Switch between **3D** and **Real**.
-- **The counter**: 3D mithai built in code. Drag one onto his face, or tap it, and it joins your bribe.
+- **The head**: Chandu's face printed as ~9,000 halftone dots, each on a spring, with depth from Depth Anything V2 so it turns in 3D. It follows your cursor, and its moods follow sugar:
+  - Fed: the sweet turns to dots and pours into his mouth, his cheeks puff, a yellow sugar wave runs over his face, and his eyes turn into hearts.
+  - Sugar rush (55%+): jittery, random heart eyes.
+  - Too much (85%+): a cold. Watery eyes, a runny nose, and a sneeze every few seconds that scatters the whole face.
+  - **Burn it off**: a football bounces off his head six times; every header burns sugar.
+  - Headphones on calls, eyes closed after 11 pm IST.
+- **Dress him up**: visitors pick the print colours, the dot shape (round, square, kaju, heart, star) and something to wear (shades, sweatband, party hat, crown, halo). It's saved on their device and only they see it.
+- **The counter**: six sweets (kaju katli, gulab jamun, laddoo, rasgulla, jalebi, chocolate). Tap one or drag it anywhere and it goes into your bribe.
 - **01 On the stove**: the to-do list as kitchen tickets.
 - **02 Counter hours**: the next 7 days from Google Calendar, plus the best time to catch him.
 - **03 The queue**: requests as thermal tokens, sorted by `urgency + sweets + days waiting`. Ants find the sweet ones.
@@ -20,15 +26,15 @@ cp .env.example .env.local   # all optional for local; /kitchen key is "dev" whe
 npm run dev
 ```
 
-Preview states: `/?mood=asleep`, `/?mood=call`, `/?mood=focus`, `/?mood=out`.
+Preview states: `/?mood=asleep`, `/?mood=call`, `/?mood=focus`, `/?mood=out`, and sugar with `/?sugar=0.7` (rush) or `/?sugar=0.95` (cold).
 
 ## Go live (Vercel)
 
 1. **Supabase**: create a NEW project (Mumbai). In the SQL editor, run `supabase/schema.sql`. Copy the URL, the secret key, and the publishable key.
 2. **Calendar** (see below): copy the secret iCal address.
 3. **WhatsApp alerts** (CallMeBot, free, to your own number): follow the "Free WhatsApp API" steps at callmebot.com. You send their bot one WhatsApp message and get an API key back.
-4. **Vercel**: push this folder to its own repo, import it in Vercel, and add the env vars from `.env.example` (at least `KITCHEN_KEY`, the Supabase ones and `ICS_PRIVATE_URL`).
-5. **Domain**: in Vercel, add `treat.chandumachineni.com`. In your DNS, add a `CNAME` for `treat` pointing to `cname.vercel-dns.com`.
+4. **Vercel**: the project `treatchandu` (team Mesa-Forge) deploys `main` of github.com/chaaandu/treatchandu automatically; other branches get preview links. Add the env vars from `.env.example` in Vercel → Settings → Environment Variables (at least `KITCHEN_KEY`, the Supabase ones and `ICS_PRIVATE_URL`). Until Supabase is set, the live site keeps tokens in memory only, so they vanish on redeploy.
+5. **Own domain later** (optional): add it in Vercel → Domains, then a `CNAME` pointing at `cname.vercel-dns.com`.
 
 ## Calendar: exactly what to send
 
@@ -45,11 +51,12 @@ If **Secret address** is missing, your Workspace admin has turned it off. Ask th
 
 ## Head assets
 
-`node scripts/avatar.mjs` rebuilds `public/head/{toon,real}` from `assets/source/6.png` (toon) and `3.png` (real). It uses open models: MODNet for the cut-out and Depth Anything V2 Small for depth, both Apache-2.0, downloaded once into `.cache/`.
+1. `node scripts/avatar.mjs` cuts the photo out (MODNet) and estimates depth (Depth Anything V2 Small). Both models are Apache-2.0 and download once into `.cache/`. It writes `public/head/real/color.webp` and `assets/head/real-depth.png`. The source photo (`assets/source/3.png`) stays out of git.
+2. `node scripts/dots.mjs` turns those into `public/head/dots.bin` (x, y, z and size per dot) plus `dots.json` (landmarks for eyes, mouth and nose). If you use a new photo, re-read the landmarks at the top of the script.
 
 ## Checks
 
 ```bash
 npx tsc --noEmit && npx eslint src && npx next build
-node scripts/e2e.mjs   # with `npm run dev -- -p 3077` running: feeds a sweet, prints a token, flips the head, screenshots every section into .cache/shots
+node scripts/look.mjs  # with `npm run dev -- -p 3077` running: eating, cold + sneeze, football, dress-up, docked, mobile → .cache/shots
 ```

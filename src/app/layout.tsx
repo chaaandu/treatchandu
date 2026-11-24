@@ -1,24 +1,24 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Instrument_Serif, Rozha_One } from "next/font/google";
+import { Kalam, Martian_Mono, Rozha_One } from "next/font/google";
 import "./globals.css";
 
-const sans = Geist({ variable: "--f-sans", subsets: ["latin"] });
-const mono = Geist_Mono({ variable: "--f-mono", subsets: ["latin"] });
-const serif = Instrument_Serif({ variable: "--f-serif", subsets: ["latin"], weight: "400", style: ["normal", "italic"] });
-const sign = Rozha_One({ variable: "--f-sign", subsets: ["latin"], weight: "400" });
+// Rozha One and Kalam are from the Indian Type Foundry; Martian Mono carries everything else.
+const display = Rozha_One({ variable: "--f-display", subsets: ["latin"], weight: "400" });
+const mono = Martian_Mono({ variable: "--f-mono", subsets: ["latin"], weight: ["400", "500", "600", "700"] });
+const hand = Kalam({ variable: "--f-hand", subsets: ["latin"], weight: ["400", "700"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.SITE_URL || "https://treat.chandumachineni.com"),
+  metadataBase: new URL(process.env.SITE_URL || "https://treatchandu.vercel.app"),
   title: "Bribe Desk · Chandu",
   description: "What Chandu is building, when to catch him, and the queue. Sweets move you up.",
   openGraph: { title: "Bribe Desk", description: "Sweets move you up the queue.", type: "website" },
 };
 
-export const viewport: Viewport = { themeColor: "#2f74d0", width: "device-width", initialScale: 1 };
+export const viewport: Viewport = { themeColor: "#ff4fa0", width: "device-width", initialScale: 1 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${sans.variable} ${mono.variable} ${serif.variable} ${sign.variable}`}>
+    <html lang="en" className={`${display.variable} ${mono.variable} ${hand.variable}`}>
       <body>{children}</body>
     </html>
   );

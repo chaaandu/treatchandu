@@ -56,7 +56,7 @@ export default function Ledger({ ledger, jar, kcal }: Pick<DeskState, "ledger" |
         <div className="fame">
           <div className="kcal">
             <span className="kcal-n">{kcal.toLocaleString("en-IN")}</span>
-            <span className="mono tiny">kcal delivered{kcal > 0 ? ` · ${days} days of Chandu` : ""}</span>
+            <span className="mono tiny">kcal delivered{kcal > 0 ? ` · ${days} days of Chandu` : " · promises don't count"}</span>
           </div>
           {ledger.length === 0 ? (
             <p className="muted">First bribe takes the top spot.</p>

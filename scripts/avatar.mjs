@@ -8,10 +8,8 @@ import path from "node:path";
 
 env.cacheDir = path.resolve(".cache/models");
 
-const LOOKS = [
-  { id: "toon", src: "assets/source/6.png" },
-  { id: "real", src: "assets/source/3.png" },
-];
+// Your photo (plain background, facing the camera). Then run scripts/dots.mjs.
+const LOOKS = [{ id: "real", src: "assets/source/3.png" }];
 const OUT = 1024;
 
 const depthPipe = await pipeline("depth-estimation", "onnx-community/depth-anything-v2-small", { dtype: "fp32" });
@@ -71,7 +69,8 @@ for (const look of LOOKS) {
   const dir = path.join("public/head", look.id);
   await fs.mkdir(dir, { recursive: true });
   await (await square(rgba, 4)).webp({ quality: 90, alphaQuality: 95 }).toFile(path.join(dir, "color.webp"));
-  await (await square(dn, 1)).blur(3.2).png({ compressionLevel: 9 }).toFile(path.join(dir, "depth.png"));
+  await fs.mkdir("assets/head", { recursive: true });
+  await (await square(dn, 1)).blur(3.2).png({ compressionLevel: 9 }).toFile(`assets/head/${look.id}-depth.png`);
   // previews for checking
   await (await square(rgba, 4)).png().toFile(path.join(".cache", `${look.id}-color.png`));
   await (await square(dn, 1)).blur(3.2).png().toFile(path.join(".cache", `${look.id}-depth.png`));

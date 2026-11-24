@@ -67,6 +67,10 @@ export async function deskState(): Promise<DeskState> {
     ledger,
     jar,
     kcal: ledger.reduce((s, p) => s + p.kcal, 0),
+    sweets: {
+      total: offers.reduce((s, o) => s + o.qty, 0),
+      delivered: offers.filter((o) => o.state === "delivered").reduce((s, o) => s + o.qty, 0),
+    },
     live: url && key ? { supabaseUrl: url, supabaseKey: key } : null,
   };
 }

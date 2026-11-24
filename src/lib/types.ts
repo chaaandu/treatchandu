@@ -1,4 +1,4 @@
-export type SweetId = "kaju" | "jamun" | "laddoo" | "jalebi" | "rasgulla" | "choco" | "chai";
+export type SweetId = "kaju" | "jamun" | "laddoo" | "jalebi" | "rasgulla" | "choco";
 
 export type Status = "issued" | "tasting" | "stove" | "served" | "bitter";
 export type Need = "today" | "tomorrow" | "week" | "whenever";
@@ -91,5 +91,6 @@ export interface DeskState {
   ledger: { name: string; points: number; delivered: number; promised: number; kcal: number }[];
   jar: { name: string; sweet: SweetId; state: "promised" | "delivered"; at: string }[];
   kcal: number;
+  sweets: { total: number; delivered: number };
   live: { supabaseUrl: string; supabaseKey: string } | null;
 }

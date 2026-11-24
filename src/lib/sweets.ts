@@ -16,7 +16,6 @@ export const SWEETS: Sweet[] = [
   { id: "rasgulla", name: "Rasgulla", points: 4, kcal: 180, color: "#F7F3EA", quip: "Squeeze the syrup first." },
   { id: "jalebi", name: "Jalebi", points: 3, kcal: 150, color: "#F07D12", quip: "Crispy, not soggy." },
   { id: "choco", name: "Chocolate", points: 2, kcal: 230, color: "#4A2A1A", quip: "Dark. Fine." },
-  { id: "chai", name: "Cutting chai", points: 1, kcal: 90, color: "#B4562E", quip: "Not a sweet. Still accepted." },
 ];
 
 export const SWEET: Record<SweetId, Sweet> = Object.fromEntries(SWEETS.map((s) => [s.id, s])) as Record<SweetId, Sweet>;

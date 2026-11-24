@@ -5,7 +5,7 @@ import type { Mood } from "@/lib/types";
 import { bus, subscribe } from "./bus";
 
 const MOOD: Record<Mood, string> = {
-  free: "Got sweets?",
+  free: "Got sweets? Drag one to my mouth.",
   call: "On a call. Sweets still accepted.",
   focus: "Building. Leave it on the counter.",
   out: "Out today. The queue's open.",
@@ -43,7 +43,7 @@ export default function Bubble({ say }: { say: { text: string; at: number } | nu
   }, []);
 
   const now = typeof performance !== "undefined" ? performance.now() : 0;
-  let text = MOOD[bus.mood];
+  let text = bus.sugar >= 0.85 ? "Too much sugar. Achoo. Send football." : bus.sugar >= 0.55 && bus.mood === "free" ? "SUGAR. RUSH." : MOOD[bus.mood];
   let hot = false;
   if (say && now - say.at < 3200) { text = say.text; hot = true; }
   else if (bus.held) { text = "Bring it here."; hot = true; }

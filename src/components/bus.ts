@@ -1,11 +1,12 @@
 "use client";
 import type { Mood, SweetId } from "@/lib/types";
+import type { Acc } from "./dots/accessories";
+import type { ThemeId } from "./dots/theme";
 
 /**
  * One mutable bag shared by the 3D scene (reads it every frame) and React (subscribes).
  * Positions are viewport pixels.
  */
-type Look = "toon" | "real";
 type Listener = () => void;
 
 export const bus = {
@@ -16,8 +17,15 @@ export const bus = {
   held: null as null | { sweet: SweetId; x: number; y: number; from: number },
   /** head on screen, written by the scene each frame */
   head: { x: 0, y: 0, r: 100, docked: false, mx: 0, my: 0 },
-  look: "toon" as Look,
   mood: "free" as Mood,
+  /** sugar level the face reacts to, 0..1 (server level + what this visitor fed − what he burned) */
+  sugar: 0,
+  /** football: performance.now() when a burn was asked for */
+  burnAt: 0,
+  /** heart eyes + sparkles (new sweets since your last visit) */
+  cheerAt: 0,
+  /** how the visitor dressed him up */
+  custom: { theme: "box" as ThemeId, shape: 0, acc: "none" as Acc, bold: false },
   /** last time something was eaten, and what */
   ate: { at: 0, sweet: null as SweetId | null },
   boop: 0,
@@ -40,9 +48,9 @@ export function feed(sweet: SweetId, x: number, y: number) {
   emit();
 }
 
-export function setLook(l: Look) {
-  bus.look = l;
-  try { localStorage.setItem("desk.look", l); } catch {}
+export function setCustom(c: Partial<typeof bus.custom>) {
+  bus.custom = { ...bus.custom, ...c };
+  try { localStorage.setItem("desk.custom", JSON.stringify(bus.custom)); } catch {}
   emit();
 }
 
