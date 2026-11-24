@@ -1,0 +1,21 @@
+// node scripts/shot.mjs [url] [outPrefix] [width] [height]
+import { chromium } from "playwright";
+const url = process.argv[2] || "http://localhost:3077/";
+const out = process.argv[3] || ".cache/shots/home";
+const w = +(process.argv[4] || 1440), h = +(process.argv[5] || 900);
+const b = await chromium.launch({ args: ["--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"] });
+const p = await b.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: 1 });
+const logs = [];
+p.on("console", (m) => (m.type() === "error" || m.type() === "warning") && logs.push(`${m.type()}: ${m.text()}`));
+p.on("pageerror", (e) => logs.push(`pageerror: ${e.message}`));
+await p.goto(url, { waitUntil: "networkidle" });
+await p.waitForTimeout(2500);
+await p.mouse.move(w * 0.8, h * 0.3, { steps: 8 });
+await p.waitForTimeout(1200);
+await p.screenshot({ path: `${out}-hero.png` });
+await p.mouse.move(w * 0.2, h * 0.75, { steps: 8 });
+await p.waitForTimeout(900);
+await p.screenshot({ path: `${out}-hero2.png` });
+await p.screenshot({ path: `${out}-full.png`, fullPage: true });
+console.log(logs.slice(0, 15).join("\n") || "no console errors");
+await b.close();
